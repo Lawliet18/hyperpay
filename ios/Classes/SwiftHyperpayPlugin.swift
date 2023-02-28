@@ -75,9 +75,9 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             
             // Add the shopperResultURL to the params, without it the payment
             // can not proceed.
-            params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
+            //params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
 
-            NSLog("shopperResultUrl \(params.shopperResultURL)")
+            //NSLog("shopperResultUrl \(params.shopperResultURL)")
             
             self.provider.submitTransaction(OPPTransaction(paymentParams: params), completionHandler: { (transaction, error) in
                 if (error != nil) {
@@ -86,15 +86,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                 } else {
                     completion(.success)
                     NSLog("transaction \(transaction)")
-                    if transaction.type == .asynchronous {
-                        NSLog("Async")
-                    NSLog("transaction.redirectURL \(transaction.redirectURL)")
-                        
-                        self.safariVC = SFSafariViewController(url: transaction.redirectURL!)
-                        self.safariVC?.delegate = self;
-                        UIApplication.shared.windows.first?.rootViewController!.present(self.safariVC!, animated: true, completion: nil)
-                        
-                    } else if transaction.type == .synchronous {
+                    
                     self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                         guard let resourcePath = checkoutInfo?.resourcePath else {
                             self.paymentResult!(
@@ -108,7 +100,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         }
                         self.paymentResult!(resourcePath)
                     })
-                    }
+                    
                 }
             })
         }
