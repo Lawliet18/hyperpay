@@ -76,6 +76,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             // Add the shopperResultURL to the params, without it the payment
             // can not proceed.
             params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
+
+            NSLog("shopperResultUrl \(params.shopperResultURL)")
             
             self.provider.submitTransaction(OPPTransaction(paymentParams: params), completionHandler: { (transaction, error) in
                 if (error != nil) {
@@ -83,9 +85,12 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                     self.paymentResult?(error?.localizedDescription)
                 } else {
                     completion(.success)
+                    NSLog("transaction \(transaction)")
                     if transaction.type == .asynchronous {
+                        NSLog("Async")
+                    NSLog("transaction.redirectURL \(transaction.redirectURL)")
                         
-                        self.safariVC = SFSafariViewController(url: self.transaction!.redirectURL!)
+                        self.safariVC = SFSafariViewController(url: transaction.redirectURL!)
                         self.safariVC?.delegate = self;
                         UIApplication.shared.windows.first?.rootViewController!.present(self.safariVC!, animated: true, completion: nil)
                         
