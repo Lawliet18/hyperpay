@@ -111,7 +111,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
 
             let controller = FlutterViewController(project: nil, nibName: nil, bundle: nil)
 
-            let navigationController = UINavigationController(rootViewController: controller!)
+            let navigationController = UINavigationController(rootViewController: controller)
 
 
             delegate.window?.rootViewController?.view.removeFromSuperview()
