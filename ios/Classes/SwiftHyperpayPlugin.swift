@@ -110,18 +110,22 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
         let buttonFactory = ApplePayButtonViewFactory(messenger: registrar.messenger())
 
         if let delegate = UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }  {
-
-            let controller = delegate.window?.rootViewController as? FlutterViewController
-
-            let navigationController = UINavigationController(rootViewController: controller)
-
-
-            delegate.window?.rootViewController?.view.removeFromSuperview()
-            delegate.window?.rootViewController = navigationController
-
-            navigationController.setNavigationBarHidden(true, animated: false)
-
-            delegate.window?.makeKeyAndVisible()
+            if let window = delegate.window {
+                if let controller = window.rootViewController as? FlutterViewController {
+                    let navigationController = UINavigationController(rootViewController: controller)
+                    navigationController.setNavigationBarHidden(true, animated: false)
+                    window.rootViewController = navigationController
+                    window.makeKeyAndVisible()
+                } else {
+                    let controller = FlutterViewController(project: nil, nibName: nil, bundle: nil)
+                    let navigationController = UINavigationController(rootViewController: controller)
+                    navigationController.setNavigationBarHidden(true, animated: false)
+                    window.rootViewController = navigationController
+                    window.makeKeyAndVisible()
+                }
+            } else {
+                NSLog("Error: Window's root view controller is nil.")
+            }
 
         }
 
