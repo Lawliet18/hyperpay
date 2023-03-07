@@ -140,17 +140,14 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
         registrar.addApplicationDelegate(instance)
     }
 
-    public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        var handler:Bool = false
-
-        // Compare the recieved URL with our URL type
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else {
+            return
+        }
+    
         if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier!) == .orderedSame {
             self.didReceiveAsynchronousPaymentCallback(result: self.paymentResult!)
-            
-            handler = true
         }
-        
-        return handler
     }
     
     public func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
@@ -525,7 +522,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             DispatchQueue.main.async {
                 self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                     guard let resourcePath = checkoutInfo?.resourcePath else {
-                        self.paymentResult!(
+                        result(
                             FlutterError(
                                 code: "0.2",
                                 message: error?.localizedDescription,
@@ -534,7 +531,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         )
                         return
                     }
-                    self.paymentResult!(resourcePath)
+                    NSLog("ResourcePath \(resourcePath)");
+                    result(resourcePath)
                 })
             }
         }
