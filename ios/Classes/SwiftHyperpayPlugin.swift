@@ -46,37 +46,40 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     let shopperResultURLSuffix = ".payments://result";
     
     public func onThreeDSChallengeRequired(completion: @escaping (UINavigationController) -> Void) {
-        let rootViewController = UIApplication.shared.delegate?.window??.rootViewController as! UINavigationController
 
-        let nc = UINavigationController()
-        nc.delegate = self
-        
-        DispatchQueue.main.async {
-            rootViewController.present(nc, animated: true) {
-                completion(nc)
-            }
+              let rvController = UIApplication.shared.delegate?.window??.rootViewController
+              let nc = UINavigationController()
+              nc.delegate = self
+
+              DispatchQueue.main.async {
+                rvController!.present(nc, animated: true) {
+                    completion(nc)
+                }
+
+
         }
     }
-    
+
     public func onThreeDSConfigRequired(completion: @escaping (OPPThreeDSConfig) -> Void) {
-        let config = OPPThreeDSConfig()
-        config.appBundleID = Bundle.main.bundleIdentifier!
-        completion(config)
+               let config = OPPThreeDSConfig()
+               config.appBundleID = Bundle.main.bundleIdentifier!
+               completion(config)
+
     }
-    
+
     public func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         controller.dismiss(animated: true, completion: nil)
         self.paymentResult!("canceled")
     }
-    
+
     public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, completion: @escaping (PKPaymentAuthorizationStatus) -> Void) {
-        
+
         if let params = try? OPPApplePayPaymentParams(checkoutID: self.checkoutID, tokenData: payment.token.paymentData) as OPPApplePayPaymentParams? {
-            
+
             // Add the shopperResultURL to the params, without it the payment
             // can not proceed.
             params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
-            
+
             self.provider.submitTransaction(OPPTransaction(paymentParams: params), completionHandler: { (transaction, error) in
                 if (error != nil) {
                     completion(.failure)
@@ -100,8 +103,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             })
         }
     }
-    
-    
+
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "plugins.nyartech.com/hyperpay", binaryMessenger: registrar.messenger())
         let instance = SwiftHyperpayPlugin()
@@ -118,21 +121,21 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             delegate.window?.rootViewController = navigationController
 
             navigationController.setNavigationBarHidden(true, animated: false)
-        
+
              delegate.window?.makeKeyAndVisible()
-    
+
         }
-        
+
         registrar.register(buttonFactory, withId: "plugins.nyartech.com/hyperpay/apple_pay_button")
         registrar.addMethodCallDelegate(instance, channel: channel)
         registrar.addApplicationDelegate(instance)
     }
-    
+
     public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         var handler:Bool = false
-        
+
         // Compare the recieved URL with our URL type
-        if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier! + ".payments") == .orderedSame {
+        if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier!) == .orderedSame {
             self.didReceiveAsynchronousPaymentCallback(result: self.paymentResult!)
             
             handler = true
