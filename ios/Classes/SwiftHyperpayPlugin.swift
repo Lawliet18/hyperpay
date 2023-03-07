@@ -262,7 +262,11 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             params.isTokenizationEnabled = true
             params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
 
+            NSLog("shopperResultURL \(params.shopperResultURL)");
+
             self.transaction  = OPPTransaction(paymentParams: params)
+            NSLog("transaction \(self.transaction.redirectURL)");
+
             self.provider.submitTransaction(self.transaction!) {
                 (transaction, error) in
                 guard let transaction = self.transaction else {
@@ -299,6 +303,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true)
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
+                                NSLog("ResourcePath \(resourcePath)");
+
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
@@ -321,6 +327,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                     } else if transaction.type == .synchronous {
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
+                                NSLog("ResourcePath \(resourcePath)");
+
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
@@ -371,6 +379,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             NSLog(self.cvv);
             
             params.shopperResultURL = Bundle.main.bundleIdentifier! + shopperResultURLSuffix
+
+            NSLog("shopperResultURL \(params.shopperResultURL)");
             
             self.transaction  = OPPTransaction(paymentParams: params)
             self.provider.submitTransaction(self.transaction!) {
@@ -409,6 +419,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true)
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
+                                NSLog("ResourcePath \(resourcePath)");
+
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
