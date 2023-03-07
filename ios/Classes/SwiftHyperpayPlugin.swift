@@ -134,6 +134,9 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
         guard let url = URLContexts.first?.url else {
             return
         }
+
+        NSLog("Url \(url)")
+        NSLog("isScheme \(url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier!) == .orderedSame)")
     
         if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier!) == .orderedSame {
             self.didReceiveAsynchronousPaymentCallback(result: self.paymentResult!)
@@ -232,6 +235,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     }
     
     private func onCreditCard(args:Dictionary<String, Any>) {
+        NSLog("onCreditCard");
         // Collecting card details coming from the platform channel arguments
         let card = (args["card"] as? Dictionary<String, Any>) ?? Dictionary()
         self.cardHolder = card["holder"] as! String
@@ -502,6 +506,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     }
     
     @objc func didReceiveAsynchronousPaymentCallback(result: @escaping FlutterResult) {
+        NSLog("didReceiveAsynchronousPaymentCallback")
         NotificationCenter.default.removeObserver(
             self,
             name: Notification.Name(rawValue: "AsyncPaymentCompletedNotificationKey"),
