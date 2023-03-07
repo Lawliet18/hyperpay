@@ -47,8 +47,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     
     public func onThreeDSChallengeRequired(completion: @escaping (UINavigationController) -> Void) {
         NSLog("onThreeDSChallengeRequired")
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-            let rootViewController = appDelegate.window??.rootViewController {
+        if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
     
             let nc = UINavigationController()
             nc.delegate = self
