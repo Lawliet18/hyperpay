@@ -265,7 +265,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
             NSLog("shopperResultURL \(params.shopperResultURL)");
 
             self.transaction  = OPPTransaction(paymentParams: params)
-            NSLog("transaction \(self.transaction.redirectURL)");
+            NSLog("transaction \(self.transaction)");
 
             self.provider.submitTransaction(self.transaction!) {
                 (transaction, error) in
@@ -303,8 +303,6 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true)
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
-                                NSLog("ResourcePath \(resourcePath)");
-
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
@@ -314,11 +312,13 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                                 )
                                 return
                             }
+                            NSLog("ResourcePath \(resourcePath)");
                             self.paymentResult!(resourcePath)
                         })
                     }
                     
                     if transaction.type == .asynchronous {
+                        NSLog("redirectURL \(self.transaction?.redirectURL)");
                         
                         self.safariVC = SFSafariViewController(url: self.transaction!.redirectURL!)
                         self.safariVC?.delegate = self;
@@ -327,8 +327,6 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                     } else if transaction.type == .synchronous {
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
-                                NSLog("ResourcePath \(resourcePath)");
-
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
@@ -338,6 +336,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                                 )
                                 return
                             }
+                            NSLog("ResourcePath \(resourcePath)");
                             self.paymentResult!(resourcePath)
                         })
                     } else {
@@ -419,8 +418,6 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                         UIApplication.shared.delegate?.window??.rootViewController?.dismiss(animated: true)
                         self.provider.requestCheckoutInfo(withCheckoutID: self.checkoutID, completionHandler: { (checkoutInfo, error) in
                             guard let resourcePath = checkoutInfo?.resourcePath else {
-                                NSLog("ResourcePath \(resourcePath)");
-
                                 self.paymentResult!(
                                     FlutterError(
                                         code: "0.2",
@@ -430,11 +427,13 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                                 )
                                 return
                             }
+                            NSLog("ResourcePath \(resourcePath)");
                             self.paymentResult!(resourcePath)
                         })
                     }
                     
                     if transaction.type == .asynchronous {
+                        NSLog("redirectURL \(self.transaction?.redirectURL)");
                         
                         self.safariVC = SFSafariViewController(url: self.transaction!.redirectURL!)
                         self.safariVC?.delegate = self;
