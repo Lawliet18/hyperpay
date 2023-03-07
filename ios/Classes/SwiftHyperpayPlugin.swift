@@ -46,24 +46,34 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     let shopperResultURLSuffix = ".payments://result";
     
     public func onThreeDSChallengeRequired(completion: @escaping (UINavigationController) -> Void) {
-
-              let rvController = UIApplication.shared.delegate?.window??.rootViewController
-              let nc = UINavigationController()
-              nc.delegate = self
-
-              DispatchQueue.main.async {
-                rvController!.present(nc, animated: true) {
-                    completion(nc)
+        NSLog("onThreeDSChallengeRequired")
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+            let rootViewController = appDelegate.window??.rootViewController {
+    
+            let nc = UINavigationController()
+            nc.delegate = self
+    
+            DispatchQueue.main.async {
+                // Check if the root view controller is already a navigation controller
+                if let navController = rootViewController as? UINavigationController {
+                    // If it is, push the new view controller onto the existing navigation stack
+                    navController.pushViewController(nc, animated: true)
+                } else {
+                    // If it's not, present the new navigation controller modally
+                    rootViewController.present(nc, animated: true) {
+                    // Only call the completion closure if it's non-nil
+                    completion?(nc)
+                    }
                 }
-
-
+            }
         }
+
     }
 
     public func onThreeDSConfigRequired(completion: @escaping (OPPThreeDSConfig) -> Void) {
-               let config = OPPThreeDSConfig()
-               config.appBundleID = Bundle.main.bundleIdentifier!
-               completion(config)
+        let config = OPPThreeDSConfig()
+        config.appBundleID = Bundle.main.bundleIdentifier!
+        completion(config)
 
     }
 
