@@ -61,8 +61,8 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
                 } else {
                     // If it's not, present the new navigation controller modally
                     rootViewController.present(nc, animated: true) {
-                    // Only call the completion closure if it's non-nil
-                    completion?(nc)
+                        // Only call the completion closure if it's non-nil
+                        completion?(nc)
                     }
                 }
             }
