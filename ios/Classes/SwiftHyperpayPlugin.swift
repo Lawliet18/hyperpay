@@ -47,23 +47,13 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
     
     public func onThreeDSChallengeRequired(completion: @escaping (UINavigationController) -> Void) {
         NSLog("onThreeDSChallengeRequired")
-        if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
-    
-            let nc = UINavigationController()
-            nc.delegate = self
-    
-            DispatchQueue.main.async {
-                // Check if the root view controller is already a navigation controller
-                if let navController = rootViewController as? UINavigationController {
-                    // If it is, push the new view controller onto the existing navigation stack
-                    navController.pushViewController(nc, animated: true)
-                } else {
-                    // If it's not, present the new navigation controller modally
-                    rootViewController.present(nc, animated: true) {
-                        // Only call the completion closure if it's non-nil
-                        completion?(nc)
-                    }
-                }
+        let rvController = UIApplication.shared.delegate?.window??.rootViewController
+        let nc = UINavigationController()
+        nc.delegate = self
+
+        DispatchQueue.main.async {
+            rvController!.present(nc, animated: true) {
+                completion(nc)
             }
         }
 
@@ -131,7 +121,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
 
             navigationController.setNavigationBarHidden(true, animated: false)
 
-             delegate.window?.makeKeyAndVisible()
+            delegate.window?.makeKeyAndVisible()
 
         }
 
