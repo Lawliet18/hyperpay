@@ -49,9 +49,9 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
 
               let rvController = UIApplication.shared.delegate?.window??.rootViewController
               let nc = UINavigationController()
-                nc.delegate = self
+              nc.delegate = self
 
-            DispatchQueue.main.async {
+              DispatchQueue.main.async {
                 rvController!.present(nc, animated: true) {
                     completion(nc)
                 }
