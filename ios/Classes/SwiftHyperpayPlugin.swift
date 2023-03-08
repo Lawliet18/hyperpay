@@ -135,7 +135,7 @@ public class SwiftHyperpayPlugin: UINavigationController, FlutterPlugin, SFSafar
         var handler:Bool = false
 
         // Compare the recieved URL with our URL type
-        if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier!) == .orderedSame {
+        if url.scheme!.caseInsensitiveCompare(Bundle.main.bundleIdentifier! + ".payments") == .orderedSame {
             self.didReceiveAsynchronousPaymentCallback(result: self.paymentResult!)
             
             handler = true
